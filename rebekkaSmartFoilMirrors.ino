@@ -31,14 +31,16 @@ SparkFun_TMF882X  myTMF882X;
 
 static struct tmf882x_msg_meas_results myResults;
 
-// xxx rollingAvg[9] = [0, 0, 0, 0, 0, 0, 0, 0, 0];
+int distanceStartDimCm = 300;  // cm distance from where it should start to fade out from maxDimValue (fully clear)
+int distanceStopDimCm = 150;   // cm distance from where dimming is 0 (fully opaque)
+int maxDimValue = 1024;  // if furthest, this value is used
+
+// Leave me alone
 const int numSensors = 9;
 const int numMeasurements = 2;
 int rollingAverages[numSensors] = {0}; // 1D array for rolling averages
 int sensorValues[numSensors][numMeasurements] = {0}; // 2D array to store sensor values
-int distanceStartDimCm = 300;  // cm distance from where it should start to fade out from maxDimValue (fully clear)
-int distanceStopDimCm = 150;   // cm distance from where dimming is 0 (fully opaque)
-int maxDimValue = 1024;  // if furthest, this value is used
+
 
 void setup() {
     delay(1000);
