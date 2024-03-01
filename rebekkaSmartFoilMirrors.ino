@@ -154,7 +154,7 @@ void loop() {
     // printAverages(rollingAverages);
     printAverages(deviation);
     if(somethingAnywhere()) {
-      Serial.println("SOMETHING THERE 8==============================D'`-^_°__o.");
+      Serial.println("SOMETHING THERE ==============================");
 
       int averageMm = averageOfAverages();
       int switchFoil = amountToDim(averageMm);
