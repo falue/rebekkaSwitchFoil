@@ -1,10 +1,4 @@
 /*
-
-  Example-01_Basic.ino
-
-  This demo shows a basic use of a TMF882X device. The device is connected to, 
-  and a single reading is taken for each loop iteration. 
-
   Supported Boards:
   
    SparkFun Qwiic dToF Imager - TMF8820        https://www.sparkfun.com/products/19036
@@ -13,6 +7,8 @@
    SparkFun Qwiic dToF Imager - TMF8821        https://www.sparkfun.com/products/19037
    
   Written by Kirk Benell @ SparkFun Electronics, April 2022
+
+  Gewurstel by FL
 
   Repository:
      https://github.com/sparkfun/SparkFun_Qwiic_TMF882X_Arduino_Library
@@ -24,15 +20,36 @@
 */
 #include "SparkFun_TMF882X_Library.h" //http://librarymanager/All#SparkFun_Qwiic_TMPF882X
 
+#include <RBDdimmer.h> //https://github.com/RobotDynOfficial/RBDDimmer
 SparkFun_TMF882X  myTMF882X;
-
-// IC2 for esp32
-#include <Wire.h>
-#define SDA_PIN 21
-#define SCL_PIN 22
 
 // Structure to hold the measurement results - this is defined by the TMF882X SDK.
 static struct tmf882x_msg_meas_results myResults;
+
+int ledPin = 21;  // LED connected to digital
+int potPin = A0;  // LED connected to digital
+
+bool ENABLED_PERSONDETECTOR = true;
+bool ENABLED_DIMMER = false;
+
+// DIMMER
+const int zeroCrossPin  = 33;  // D7 (NOT CHANGABLE for arduino uno/nano/every/leonardo)
+const int dimPin  = 15;  // DIM PIN
+int MIN_POWER  = 0;  // 15
+int MAX_POWER  = 28;  // 28% = 63.8VAC
+/*
+  70%=193VAC
+  75=203
+  80=213
+  85=220
+  90=224
+  95=226
+  97=226.1, sometimes DEAD
+  98=DEAD
+  99=DEAD
+  100=SUPER DEAD
+*/
+dimmerLamp dimmer(dimPin, zeroCrossPin);
 
 int distanceStartDimMm = 3000;  // mm distance from where it should start to fade out from maxDimValue (fully clear)
 int distanceStopDimMm = 1500;   // mm distance from where dimming is 0 (fully opaque)
@@ -40,61 +57,28 @@ int maxDimValue = 255;  // if furthest, this value is used
 
 // Leave me alone
 const int numSensors = 9;
-const int numMeasurements = 6;
+const int numMeasurements = 1;
+const int groundTruthMeasurements = 33;
 int rollingAverages[numSensors] = {0}; // 1D array for rolling averages
 int groundTruth[numSensors] = {5000}; // 1D array for rolling averages
 int deviation[numSensors] = {0}; // 1D array for differences between measurement, groundTruth
 int sensorValues[numSensors][numMeasurements] = {0}; // 2D array to store sensor values
-int deadZone = 100;  // +/- allowed noise/deviation
+int deadZone = 20;  // +/- allowed noise/deviation. 100
 int confidenceBooster = 1;  // boost confidence in measurement. 1 = not so sure (slowly changing values), 2 = twice as sure (faster changing), etc
 
-/*
-
-TODO:
-NEEDS TO ESTABLISH STATUS QUO / GROUND TRUTH OF CURRENT ROOM
-right now it detects everything between 300 and 150cm.
-if it faces a wall, that does the dimming.
-
-have a rolling average of the whole situation (during setup()? but then the user who plugs it in is in the way).
-calculate deviation to current measure, use that as dimming value.
-
-OR:
-detect deviation by change in values.
-but then it's not better than a normal UV sensor.
-
-*/
-
-
-
-
-
-/*
-
-
-
-
-!!!!
-     
-     THIS SCRIPT IS BUTCHERED
-
-     WITHOUT NEOPIXEL LEDS BUT TRYING TO GET IC2 / TMF8820 TO WORK ON ESP32
-
-     FOR ARDUINO / CODE BASE CHECKOUT THE arduinoInitialTest FOLDER
-
-!!!!
-
-
-
-
-*/
+int averageMm = 0;
+int switchFoil = 0;
 
 void setup() {
-    Wire.begin(SDA_PIN, SCL_PIN);  // esp32 IC2 comms
     delay(1000);
     Serial.begin(115200);
     Serial.println("");
     Serial.println("In setup");
     Serial.println("==============================");
+
+    pinMode(zeroCrossPin, INPUT_PULLUP);  // ?? pullup?
+    pinMode(dimPin, OUTPUT);
+    dimmer.begin(NORMAL_MODE, ON);
 
     // Initialize the TMF882X device
     if(!myTMF882X.begin()) {
@@ -107,68 +91,102 @@ void setup() {
     }
     // The device is now ready for operations
 
+    // Get the current CPU clock frequency in MHZ
+    Serial.print("CPU frequency MHZ: ");  // esp32-wroom-32e can be "80 MHz to 240 MHz". Default: 240 MHz
+    Serial.println(getCpuFrequencyMhz());
+
+    pinMode(ledPin, OUTPUT);
+
     // Establish ground truth (measure room)
-    for (int i = 0; i < 100; ++i) {
-      if(myTMF882X.startMeasuring(myResults)) {
-          for (int i = 0; i < myResults.num_results; ++i) {
-              updateRollingAverage(true, myResults.results[i].channel-1, myResults.results[i].distance_mm);
-              // updateRollingAverageWithConfidence(true, myResults.results[i].channel-1, myResults.results[i].distance_mm);
-          }
+    if(ENABLED_PERSONDETECTOR) {
+      for (int i = 0; i < groundTruthMeasurements; ++i) {
+        digitalWrite(ledPin, HIGH);
+        if(myTMF882X.startMeasuring(myResults)) {
+            for (int i = 0; i < myResults.num_results; ++i) {
+                updateRollingAverage(true, myResults.results[i].channel-1, myResults.results[i].distance_mm);
+                // updateRollingAverageWithConfidence(true, myResults.results[i].channel-1, myResults.results[i].distance_mm);
+            }
+        }
+        delay(35);
+        digitalWrite(ledPin, LOW);
+        Serial.print("Collecting ground truths ");
+        Serial.print(i);
+        Serial.print("%..\t");
+        printAverages(groundTruth);
+        Serial.println("");
+        delay(35);
       }
-      Serial.print("Collecting ground truths ");
-      Serial.print(i);
-      Serial.print("%..\t");
-      printAverages(groundTruth);
-      delay(75);
+
+      // Set current sensor values to ground truth
+      // memcpy(sensorValues, groundTruth, sizeof(sensorValues)); ==> makes garbage
+
+      Serial.println("==============================");
+      Serial.println("Calibration finished!");
     }
-
-    // Set current sensor values to ground truth
-    // memcpy(sensorValues, groundTruth, sizeof(sensorValues)); ==> makes garbage
-
-    Serial.println("==============================");
-    Serial.println("Calibration finished!");
     Serial.println("==============================");
 }
 
 void loop() {
+    if(ENABLED_DIMMER) {
+      int dimVal = map(analogRead(potPin), 0,4095, MIN_POWER,MAX_POWER);
+      Serial.println(dimVal);  // 0-4095 !!!
+      dimmer.setPower(dimVal);
+    }
+
     // get a Measurement
-    if(myTMF882X.startMeasuring(myResults)) {
-        // print out results
-        // Serial.println("Measurements!!!\t");
-        // Serial.print("     Result Number: "); Serial.print(myResults.result_num);
-        // Serial.print("  Number of Results: "); Serial.println(myResults.num_results);       
+    if(ENABLED_PERSONDETECTOR) {
+      if(myTMF882X.startMeasuring(myResults)) {
+          // print out results
+          // Serial.println("Measurements!!!\t");
+          // Serial.print("     Result Number: "); Serial.print(myResults.result_num);
+          // Serial.print("  Number of Results: "); Serial.println(myResults.num_results);       
 
-        for (int i = 0; i < myResults.num_results; ++i) {
-            // Serial.print("       conf: "); Serial.print(myResults.results[i].confidence);
-            // Serial.print(" distance mm: "); Serial.print(myResults.results[i].distance_mm);
-            // Serial.print(" channel: "); Serial.print(myResults.results[i].channel);
-            // Serial.print(" sub_capture: "); Serial.println(myResults.results[i].sub_capture);
-            // updateRollingAverage(false, myResults.results[i].channel-1, myResults.results[i].distance_mm);
-            updateRollingAverageWithConfidence(false, myResults.results[i].channel-1, myResults.results[i].confidence  *  confidenceBooster , myResults.results[i].distance_mm);
-        }
-        // Serial.print("     photon: "); Serial.print(myResults.photon_count);    
-        // Serial.print(" ref photon: "); Serial.print(myResults.ref_photon_count);
-        // Serial.print(" ALS: "); Serial.println(myResults.ambient_light); Serial.println();
+          for (int i = 0; i < myResults.num_results; ++i) {
+              // Serial.print("       conf: "); Serial.print(myResults.results[i].confidence);
+              // Serial.print(" distance mm: "); Serial.print(myResults.results[i].distance_mm);
+              // Serial.print(" channel: "); Serial.print(myResults.results[i].channel);
+              // Serial.print(" sub_capture: "); Serial.println(myResults.results[i].sub_capture);
+              // updateRollingAverage(false, myResults.results[i].channel-1, myResults.results[i].distance_mm);
+              updateRollingAverageWithConfidence(false, myResults.results[i].channel-1, myResults.results[i].confidence  *  confidenceBooster , myResults.results[i].distance_mm);
+          }
+          // Serial.print("     photon: "); Serial.print(myResults.photon_count);    
+          // Serial.print(" ref photon: "); Serial.print(myResults.ref_photon_count);
+          // Serial.print(" ALS: "); Serial.println(myResults.ambient_light); Serial.println();
+      }
+
+      // printAverages(rollingAverages);
+      // printAverages(deviation);
+      if(somethingAnywhere()) {
+        // Serial.println("SOMETHING THERE ==============================");
+
+        averageMm = averageOfAverages();
+        switchFoil = amountToDim(averageMm);
+
+        /*Serial.print(averageMm);
+        Serial.print("\t");
+        Serial.print(switchFoil);
+        Serial.println();*/
+
+      /*} else {
+        Serial.println("");*/
+      }
     }
 
-    // printAverages(rollingAverages);
-    printAverages(deviation);
-    if(somethingAnywhere()) {
-      Serial.println("SOMETHING THERE ==============================");
+    analogWrite(ledPin, 255-switchFoil*2); // switchFoil);
 
-      int averageMm = averageOfAverages();
-      int switchFoil = amountToDim(averageMm);
+    Serial.print("averageMm:");
+    Serial.print(averageMm);
+    Serial.print(",switchFoilDim:");
+    Serial.print(255-switchFoil*2);  // somehow switchFoil var is only between 0 and ~112. double it to make an impact but wtf
 
-      /*Serial.print(averageMm);
-      Serial.print("\t");
-      Serial.print(switchFoil);
-      Serial.println();*/
+    Serial.print(",floor:");
+    Serial.print(-100);
+    Serial.print(",ceil:");
+    Serial.print(3500);
 
-    } else {
-      Serial.println("");
-    }
+    Serial.println("");
 
-    delay(15);
+    // delay(15);
 }
 
 void updateRollingAverage(boolean setupGroundTruth, int sensorNumber, int newValue) {
@@ -225,14 +243,28 @@ void updateRollingAverageWithConfidence(boolean setupGroundTruth, int sensorNumb
 }
 
 void printAverages(int data[]) {
-  for (int i = 0; i < numSensors; i++) {
-    // Serial.print(i+1);
-    // Serial.print(": ");
+  /*for (int i = 0; i < numSensors; i++) {
+    Serial.print("sens_");  // in cm
+    Serial.print(i);  // in cm
+    Serial.print(":");  // in cm
     Serial.print(data[i]);  // in cm
-    Serial.print("\t");
-  }
+    Serial.print(",");
+  }*/
+
+  Serial.print("sens_3:");  // in cm
+  Serial.print(data[3]);  // in cm
+  Serial.print(",");
+
+  Serial.print("sens_4:");  // in cm
+  Serial.print(data[4]);  // in cm
+  Serial.print(",");
+
+  Serial.print("sens_5:");  // in cm
+  Serial.print(data[5]);  // in cm
+  Serial.print(",");
+
   //Serial.print(averageOfAverages());
-  Serial.println();
+  // Serial.println();
 }
 
 int averageOfAverages() {

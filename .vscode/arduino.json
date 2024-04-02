@@ -3,5 +3,5 @@
     "board": "adafruit:samd:adafruit_metro_m0",
     "programmer": "adafruit_jlink",
     "port": "/dev/tty.usbmodem1124301",
-    "sketch": "robotDynInverter.ino"
+    "sketch": "rebekkaSmartFoilMirrors.ino"
 }
