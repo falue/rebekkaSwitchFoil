@@ -1,0 +1,9 @@
+[submodule "pcb/lib/SparkFun-KiCad-Libraries"]
+	url = https://github.com/sparkfun/SparkFun-KiCad-Libraries
+	path = pcb/lib/SparkFun-KiCad-Libraries
+[submodule "pcb/lib/pts636"]
+	path = pcb/lib/pts636
+	url = https://github.com/besi/kicad-pts636
+[submodule "pcb/lib/c8-inlet"]
+	path = pcb/lib/c8-inlet
+	url = https://github.com/besi/kicad-c8-inlet
