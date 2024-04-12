@@ -1,7 +1,4 @@
 # https://randomnerdtutorials.com/micropython-hc-sr04-ultrasonic-esp32-esp8266/
-#HC-SR04
-
-# This does not yet work and it only ever returns 2cm
 
 echo_pin = 13
 trig_pin = 12
