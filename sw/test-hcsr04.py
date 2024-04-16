@@ -12,5 +12,5 @@ ultrasonic = HCSR04(trigger_pin=trig_pin, echo_pin=echo_pin, echo_timeout_us=100
 while True:
     distance = ultrasonic.distance_cm()
     print('Distance:', distance, 'cm')
-    sleep(1)
+    sleep(.5)
     
