@@ -7,3 +7,6 @@
 [submodule "pcb/lib/c8-inlet"]
 	path = pcb/lib/c8-inlet
 	url = https://github.com/besi/kicad-c8-inlet
+[submodule "pcb/lib/ld2450"]
+	path = pcb/lib/ld2450
+	url = https://github.com/besi/kicad-ld2450

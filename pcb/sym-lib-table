@@ -2,4 +2,5 @@
   (version 7)
   (lib (name "SparkFun-Board")(type "KiCad")(uri "${KIPRJMOD}/lib/SparkFun-KiCad-Libraries/Symbols/SparkFun-Board.kicad_sym")(options "")(descr ""))
   (lib (name "robotdyn_dimmer")(type "KiCad")(uri "${KIPRJMOD}/lib/robotdyn_dimmer/robotdyn_dimmer.kicad_sym")(options "")(descr ""))
+  (lib (name "ld2450")(type "KiCad")(uri "${KIPRJMOD}/lib/ld2450/ld2450.kicad_sym")(options "")(descr ""))
 )
