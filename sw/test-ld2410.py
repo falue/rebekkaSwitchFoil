@@ -5,7 +5,7 @@
 #programme principal
 from machine import Pin, UART
 import utime
-from ld2450 import LD2450
+import ld2410
 
 #led if human_detection
 # board led on Sparkfun Thing Plus is 13
@@ -19,7 +19,7 @@ print('-----------CONFIGURATION----------------')
 uart1 = UART(1, baudrate = 256000, tx=Pin(tx_pin), rx=Pin(rx_pin), timeout = 1, timeout_char = 0, invert = 0)
 print(uart1)
 
-human_sensor = LD2450(uart1)
+human_sensor = ld2410.LD2410(uart1)
 print('----------------------------------------')
 human_sensor.enable_config()
 human_sensor.read_firmware_version()

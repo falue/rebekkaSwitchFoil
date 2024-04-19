@@ -3,8 +3,8 @@
 from   machine import Pin, Timer
 from   math    import acos, pi
 
-ZERO_CROSSOVER_PIN = 33
-TRIAC_FIRING_PIN   = 15
+ZERO_CROSSOVER_PIN = 5 #33
+TRIAC_FIRING_PIN   = 18 #15
 
 zeroCrossoverPin = Pin(ZERO_CROSSOVER_PIN, Pin.IN, Pin.PULL_DOWN)
 triacFiringPin   = Pin(TRIAC_FIRING_PIN, Pin.OUT, value=0)
