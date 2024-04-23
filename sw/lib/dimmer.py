@@ -15,8 +15,8 @@ class Dimmer:
         self._ppulse = 100.0 / fpulse + 0.11
         self._zc     = Pin(zc_pin,  Pin.IN)
         self._val    = 1
-        self._zc.irq(trigger = Pin.IRQ_RISING | Pin.IRQ_FALLING, handler = self._zeroDetectIsr)
-    
+        self._zc.irq(trigger = Pin.IRQ_RISING , handler = self._zeroDetectIsr)
+
     
     def _zeroDetectIsr(self, pin):
         if 0 == self._freq:
