@@ -3757,7 +3757,7 @@
     (property "Value" "c8 inlet" (at 19.05 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (property "Footprint" "c8-inlet:c8-inlet" (at 19.05 72.39 0)
+    (property "Footprint" "c8-inlet:c8-inlet-old" (at 19.05 72.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
     (property "Datasheet" "~" (at 19.05 72.39 0)
