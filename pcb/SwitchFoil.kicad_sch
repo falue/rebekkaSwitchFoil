@@ -2038,9 +2038,9 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid 7716f4c9-ee78-4e65-b5f0-0eb5325ca047))
-    (pin "4" (uuid 708d5441-86e7-4e0a-a9d9-35195495d608))
-    (pin "3" (uuid c9cdcfe9-a9f6-49c9-9f22-2cb3f0c46115))
     (pin "2" (uuid ced1c215-bbd9-4c51-bb4c-91a26a4a395c))
+    (pin "3" (uuid c9cdcfe9-a9f6-49c9-9f22-2cb3f0c46115))
+    (pin "4" (uuid 708d5441-86e7-4e0a-a9d9-35195495d608))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2226,14 +2226,14 @@
     (property "Price" "10" (at 261.62 116.84 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 46145343-e7d5-4607-a37e-65deb738421b))
-    (pin "4" (uuid a340d643-c9f7-4013-9a35-b58a8372139f))
-    (pin "3" (uuid 6d083d90-e6c4-4f83-beb1-6732210104b8))
-    (pin "6" (uuid fe9c9cb6-0401-4cb6-a949-77dbb33df1ab))
-    (pin "8" (uuid 2c835b86-6eeb-4c7b-b5bb-72048fcd67bb))
-    (pin "5" (uuid 3393e6c9-68bc-4cd5-9c98-3866738d7e97))
     (pin "1" (uuid 4b4d111f-a52a-4900-bf53-5bc953987477))
+    (pin "2" (uuid 46145343-e7d5-4607-a37e-65deb738421b))
+    (pin "3" (uuid 6d083d90-e6c4-4f83-beb1-6732210104b8))
+    (pin "4" (uuid a340d643-c9f7-4013-9a35-b58a8372139f))
+    (pin "5" (uuid 3393e6c9-68bc-4cd5-9c98-3866738d7e97))
+    (pin "6" (uuid fe9c9cb6-0401-4cb6-a949-77dbb33df1ab))
     (pin "7" (uuid f82e2ed3-2aa4-4b43-b811-9b28385ac623))
+    (pin "8" (uuid 2c835b86-6eeb-4c7b-b5bb-72048fcd67bb))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2363,8 +2363,8 @@
     (property "Price" ".2" (at 191.77 73.66 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid e2b1cdfd-0edf-447c-b5c2-d5c2990f30bf))
     (pin "1" (uuid 1a727ce4-f867-4c61-8fb1-07a5a2e1b721))
+    (pin "2" (uuid e2b1cdfd-0edf-447c-b5c2-d5c2990f30bf))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2467,8 +2467,8 @@
     (property "Price" ".2" (at 255.27 95.25 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 73975f94-44c4-4970-b07e-b1194f0d7dfd))
     (pin "1" (uuid 0b564579-be75-4771-b3c3-28a5e05c4475))
+    (pin "2" (uuid 73975f94-44c4-4970-b07e-b1194f0d7dfd))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2496,8 +2496,8 @@
     (property "Price" ".2" (at 91.44 124.46 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 7b6526ca-8072-4689-ba96-c30acb22c7c3))
     (pin "1" (uuid dd406c66-ed35-4615-8d0c-cec97e3e4db6))
+    (pin "2" (uuid 7b6526ca-8072-4689-ba96-c30acb22c7c3))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2525,10 +2525,10 @@
     (property "Price" "6.5" (at 41.91 69.85 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "3" (uuid 0bafd600-c20c-431b-aacb-a4d31a017340))
-    (pin "2" (uuid 93b48baf-12f9-48bf-aa5c-56495e381552))
-    (pin "4" (uuid b9ebfa3f-e399-4ebb-b079-4ed10fa47c7b))
     (pin "1" (uuid d0b5aff9-1eb5-40f2-9ab9-08b684f5d3b4))
+    (pin "2" (uuid 93b48baf-12f9-48bf-aa5c-56495e381552))
+    (pin "3" (uuid 0bafd600-c20c-431b-aacb-a4d31a017340))
+    (pin "4" (uuid b9ebfa3f-e399-4ebb-b079-4ed10fa47c7b))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2582,8 +2582,8 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid c7cb00fd-d12a-423b-84a3-dcc3447836cd))
-    (pin "3" (uuid c3e8c147-46dc-4401-9bda-1686259aa99b))
     (pin "2" (uuid a65a2a0e-21ba-4482-aad8-bd4184a75976))
+    (pin "3" (uuid c3e8c147-46dc-4401-9bda-1686259aa99b))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2611,8 +2611,8 @@
     (property "Price" ".2" (at 222.25 123.19 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 3b45885f-ac84-4243-8995-e188b4bdcd17))
     (pin "1" (uuid 2de67758-be1c-41ff-b1f4-2f2dad908948))
+    (pin "2" (uuid 3b45885f-ac84-4243-8995-e188b4bdcd17))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2640,11 +2640,11 @@
     (property "Price" "3" (at 105.41 66.04 0)
       (effects (font (size 1.27 1.27)) hide)
     )
+    (pin "0" (uuid 8e9e8bfd-5ae8-421f-98b5-efb5dfa59de4))
+    (pin "1" (uuid 04d978c7-c1d4-4d8c-8398-7e78fe604ac7))
+    (pin "2" (uuid 3c86a944-e6bf-405c-b63f-8998671498c1))
     (pin "6" (uuid f26e1402-a917-4bd6-99d7-3b0e7db8b9c2))
     (pin "7" (uuid 8d28d518-7c26-4b00-92b2-e51e7c3c2b1f))
-    (pin "1" (uuid 04d978c7-c1d4-4d8c-8398-7e78fe604ac7))
-    (pin "0" (uuid 8e9e8bfd-5ae8-421f-98b5-efb5dfa59de4))
-    (pin "2" (uuid 3c86a944-e6bf-405c-b63f-8998671498c1))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2777,11 +2777,11 @@
     (property "Price" "4" (at 246.38 123.19 0)
       (effects (font (size 1.27 1.27)) hide)
     )
+    (pin "1" (uuid c1a336e7-b269-4e03-a841-3c3ef7d80e43))
     (pin "2" (uuid 42f3f902-480e-4e1f-a291-f2deae794674))
+    (pin "3" (uuid 8b8f5d32-b096-47d6-9adc-1fa6117df295))
     (pin "4" (uuid 5553f20c-7fd0-4aec-a471-643a31939e22))
     (pin "5" (uuid aa2882f6-6a4e-4064-be53-6d8c030c13bd))
-    (pin "3" (uuid 8b8f5d32-b096-47d6-9adc-1fa6117df295))
-    (pin "1" (uuid c1a336e7-b269-4e03-a841-3c3ef7d80e43))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2891,34 +2891,34 @@
     (property "Price" "21" (at 176.53 60.96 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 9cab9cb9-0f03-4f00-a5af-d67538383ee2))
-    (pin "17" (uuid 9208d03a-c24c-4744-b15d-5d3dcc5669e3))
+    (pin "1" (uuid b0de62f9-97ab-4447-86a6-1a0edc9043fb))
+    (pin "10" (uuid a89d7ff9-9422-46b3-b760-bed0acf3d77f))
+    (pin "11" (uuid e217014f-5365-4aed-902d-89a312764217))
     (pin "12" (uuid 19673fbc-8d34-4acc-9a8a-293e13c41b2e))
+    (pin "13" (uuid 0b806e0f-4b46-42f0-b33f-8028bf82ed6c))
+    (pin "14" (uuid 1e41bcd2-9200-4dc8-8ee8-fabc27551997))
+    (pin "15" (uuid 91caff01-03e3-4f46-a75f-05fcd84ff699))
+    (pin "16" (uuid 10c967e9-c6c3-4bbd-b1ac-e1b10659ee13))
+    (pin "17" (uuid 9208d03a-c24c-4744-b15d-5d3dcc5669e3))
+    (pin "18" (uuid 628c9d8a-05e8-411b-a379-249936d2199d))
+    (pin "19" (uuid 7a8405d2-469f-4d6c-91ac-1082e3e181e7))
+    (pin "2" (uuid 9cab9cb9-0f03-4f00-a5af-d67538383ee2))
+    (pin "20" (uuid b822340f-1713-4df1-87d8-ba8e90cc6d70))
+    (pin "21" (uuid 3819e15c-00e5-4390-8a5a-37998070741c))
+    (pin "22" (uuid e83a3b9f-90ee-4381-9a2b-0d75e407db77))
+    (pin "23" (uuid e16d135c-d623-4d04-ada1-1f66f205f5b0))
     (pin "24" (uuid 18547d28-e748-4d0c-8dca-4f9f81947b64))
     (pin "25" (uuid 6d4c031b-1320-48da-89d3-8ce9255ccbfc))
-    (pin "11" (uuid e217014f-5365-4aed-902d-89a312764217))
-    (pin "4" (uuid 0f1bb068-ad4d-455d-a2c2-1db20cf669a3))
-    (pin "5" (uuid 5ad5daec-fa08-4932-827a-c50cde73391e))
-    (pin "8" (uuid 425b447d-a2ea-45af-99a1-5fdb2cd1e57a))
-    (pin "9" (uuid 59842137-0d70-4342-969c-422f36b46618))
-    (pin "22" (uuid e83a3b9f-90ee-4381-9a2b-0d75e407db77))
     (pin "26" (uuid eb740222-a083-47e0-9ab5-4fa09fbef0d4))
     (pin "27" (uuid 3ac9891d-05ff-4acf-bbda-8a914e1567c1))
-    (pin "23" (uuid e16d135c-d623-4d04-ada1-1f66f205f5b0))
-    (pin "1" (uuid b0de62f9-97ab-4447-86a6-1a0edc9043fb))
-    (pin "21" (uuid 3819e15c-00e5-4390-8a5a-37998070741c))
-    (pin "6" (uuid d38f422f-4d68-4074-b8fd-579ca9fde1f6))
-    (pin "7" (uuid 0fa94902-e8fb-4f53-a1c2-2b302f9043f1))
-    (pin "10" (uuid a89d7ff9-9422-46b3-b760-bed0acf3d77f))
-    (pin "13" (uuid 0b806e0f-4b46-42f0-b33f-8028bf82ed6c))
-    (pin "16" (uuid 10c967e9-c6c3-4bbd-b1ac-e1b10659ee13))
-    (pin "18" (uuid 628c9d8a-05e8-411b-a379-249936d2199d))
     (pin "28" (uuid 3428a9c6-6794-413b-9926-864ef86f2423))
     (pin "3" (uuid fe098979-1fe9-43cf-9d32-78704facb6d9))
-    (pin "20" (uuid b822340f-1713-4df1-87d8-ba8e90cc6d70))
-    (pin "15" (uuid 91caff01-03e3-4f46-a75f-05fcd84ff699))
-    (pin "14" (uuid 1e41bcd2-9200-4dc8-8ee8-fabc27551997))
-    (pin "19" (uuid 7a8405d2-469f-4d6c-91ac-1082e3e181e7))
+    (pin "4" (uuid 0f1bb068-ad4d-455d-a2c2-1db20cf669a3))
+    (pin "5" (uuid 5ad5daec-fa08-4932-827a-c50cde73391e))
+    (pin "6" (uuid d38f422f-4d68-4074-b8fd-579ca9fde1f6))
+    (pin "7" (uuid 0fa94902-e8fb-4f53-a1c2-2b302f9043f1))
+    (pin "8" (uuid 425b447d-a2ea-45af-99a1-5fdb2cd1e57a))
+    (pin "9" (uuid 59842137-0d70-4342-969c-422f36b46618))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -2976,9 +2976,9 @@
     (property "Price" ".1" (at 52.07 60.96 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "3" (uuid 329a5d56-fb68-4e54-aa12-9207777c1082))
-    (pin "2" (uuid 37bddaae-42f8-4a47-80b8-e3d210a0d596))
     (pin "1" (uuid 80e37627-3f20-4022-b3e0-99625fb1aeae))
+    (pin "2" (uuid 37bddaae-42f8-4a47-80b8-e3d210a0d596))
+    (pin "3" (uuid 329a5d56-fb68-4e54-aa12-9207777c1082))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3006,8 +3006,8 @@
     (property "Price" ".2" (at 222.25 130.81 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid e1f98493-b265-4a07-84df-a54cea444e3d))
     (pin "1" (uuid 7179c0a9-e1d9-4b14-be83-62fa4d237fdc))
+    (pin "2" (uuid e1f98493-b265-4a07-84df-a54cea444e3d))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3085,8 +3085,8 @@
     (property "Price" "1" (at 19.05 72.39 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 09e98c6b-7190-439d-91ba-b31f82f35513))
     (pin "1" (uuid b8cebddc-60b2-4cb5-af2c-eb94aefa2c07))
+    (pin "2" (uuid 09e98c6b-7190-439d-91ba-b31f82f35513))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3114,8 +3114,8 @@
     (property "Price" ".2" (at 255.27 87.63 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid b1543759-92c9-4783-991c-198f6f1f0836))
     (pin "1" (uuid 78e3e013-610e-4ecb-9762-f08dfc3b38d7))
+    (pin "2" (uuid b1543759-92c9-4783-991c-198f6f1f0836))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3168,12 +3168,12 @@
     (property "Price" "20" (at 250.19 39.37 0)
       (effects (font (size 1.27 1.27)) hide)
     )
+    (pin "1" (uuid a89b30b8-ab96-402d-8793-3a0a95e848e6))
     (pin "2" (uuid 3da31053-2f81-4183-9365-edeef7f92740))
     (pin "3" (uuid 3c76720b-7eb6-4822-b687-b8445b0b84c6))
     (pin "4" (uuid 478da8c3-73ea-4a36-9be7-f17e92f96159))
-    (pin "6" (uuid 9baf2a42-617d-4080-b298-7e772a044667))
     (pin "5" (uuid 121e695c-a868-479b-86cd-4e9c86dd7fb1))
-    (pin "1" (uuid a89b30b8-ab96-402d-8793-3a0a95e848e6))
+    (pin "6" (uuid 9baf2a42-617d-4080-b298-7e772a044667))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3281,8 +3281,8 @@
       (effects (font (size 1.27 1.27)) hide)
     )
     (pin "1" (uuid eb9b43cd-1ac4-483f-bdf0-ad254ad101a7))
-    (pin "3" (uuid 19c66421-339a-41e9-a0ab-3ea5b0b1df65))
     (pin "2" (uuid 1aa37683-bc28-4f87-aad6-2a6acca3ee13))
+    (pin "3" (uuid 19c66421-339a-41e9-a0ab-3ea5b0b1df65))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3360,8 +3360,8 @@
     (property "Price" ".5" (at 199.39 73.66 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 14bb41e1-c4a3-441f-9fe9-0eb02f0bbc39))
     (pin "1" (uuid abb8a22e-69f3-4ccd-86a5-252467271b3e))
+    (pin "2" (uuid 14bb41e1-c4a3-441f-9fe9-0eb02f0bbc39))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3524,10 +3524,10 @@
     (property "Price" "8" (at 270.51 83.82 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid 2cd3bcbd-496a-49d3-bbb2-21454b62c108))
-    (pin "4" (uuid 531c84df-06eb-4b0e-861c-e9ff8a2f73a9))
-    (pin "3" (uuid 4c3cb2b0-f4bd-4344-8ac1-94ae72509c8e))
     (pin "1" (uuid 70a9abef-d629-4788-a376-a8c47acc3226))
+    (pin "2" (uuid 2cd3bcbd-496a-49d3-bbb2-21454b62c108))
+    (pin "3" (uuid 4c3cb2b0-f4bd-4344-8ac1-94ae72509c8e))
+    (pin "4" (uuid 531c84df-06eb-4b0e-861c-e9ff8a2f73a9))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
@@ -3555,8 +3555,8 @@
     (property "Price" "1" (at 140.97 90.17 0)
       (effects (font (size 1.27 1.27)) hide)
     )
-    (pin "2" (uuid ab962c11-e8b0-43fc-95fa-07e30c829c64))
     (pin "1" (uuid 141f099b-824c-4f08-b1df-5ae2d08f773e))
+    (pin "2" (uuid ab962c11-e8b0-43fc-95fa-07e30c829c64))
     (instances
       (project "SwitchFoil"
         (path "/de2129d4-d86e-4c0a-b6e9-01cf7b21befe"
