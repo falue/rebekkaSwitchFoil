@@ -88,82 +88,81 @@ int readRadarData(byte rec_buf[], int len, RadarTarget targets[], uint16_t numTa
   // if (radar_serial.available() > 0) {
   //     byte rec_buf[256] = "";
   //     int len = radar_serial.readBytes(rec_buf, sizeof(rec_buf));
+  for (int i = 0; i < len; i++) {
+      // Check frame header and frame trailer
+      if (rec_buf[i] == 0xAA && rec_buf[i + 1] == 0xFF && rec_buf[i + 2] == 0x03 && rec_buf[i + 3] == 0x00 && rec_buf[i + 28] == 0x55 && rec_buf[i + 29] == 0xCC) {
+          String targetInfo = ""; // A string that stores target information
+          int index = i + 4; // Skip the frame header and the data length field within the frame
 
-      for (int i = 0; i < len; i++) {
-          // Check frame header and frame trailer
-          if (rec_buf[i] == 0xAA && rec_buf[i + 1] == 0xFF && rec_buf[i + 2] == 0x03 && rec_buf[i + 3] == 0x00 && rec_buf[i + 28] == 0x55 && rec_buf[i + 29] == 0xCC) {
-              String targetInfo = ""; // A string that stores target information
-              int index = i + 4; // Skip the frame header and the data length field within the frame
+          for (int targetCounter = 0; targetCounter < numTargets; targetCounter++) {
+              if (index + 7 < len) {
+                  RadarTarget target;
+                  target.x = (int16_t)(rec_buf[index] | (rec_buf[index + 1] << 8));
+                  target.y = (int16_t)(rec_buf[index + 2] | (rec_buf[index + 3] << 8));
+                  target.speed = (int16_t)(rec_buf[index + 4] | (rec_buf[index + 5] << 8));
+                  target.resolution = (uint16_t)(rec_buf[index + 6] | (rec_buf[index + 7] << 8));
 
-              for (int targetCounter = 0; targetCounter < numTargets; targetCounter++) {
-                  if (index + 7 < len) {
-                      RadarTarget target;
-                      target.x = (int16_t)(rec_buf[index] | (rec_buf[index + 1] << 8));
-                      target.y = (int16_t)(rec_buf[index + 2] | (rec_buf[index + 3] << 8));
-                      target.speed = (int16_t)(rec_buf[index + 4] | (rec_buf[index + 5] << 8));
-                      target.resolution = (uint16_t)(rec_buf[index + 6] | (rec_buf[index + 7] << 8));
+                  // debug_serial.println(target.x);
+                  // debug_serial.println(target.y);
+                  // debug_serial.println(target.speed);
 
-                      // debug_serial.println(target.x);
-                      // debug_serial.println(target.y);
-                      // debug_serial.println(target.speed);
+                  // Check the highest bit of x and y and adjust the sign
+                  if (rec_buf[index + 1] & 0x80) target.x -= 0x8000;
+                  else target.x = -target.x;
+                  if (rec_buf[index + 3] & 0x80) target.y -= 0x8000;
+                  else target.y = -target.y;
+                  if (rec_buf[index + 5] & 0x80) target.speed -= 0x8000;
+                  else target.speed = -target.speed;
 
-                      // Check the highest bit of x and y and adjust the sign
-                      if (rec_buf[index + 1] & 0x80) target.x -= 0x8000;
-                      else target.x = -target.x;
-                      if (rec_buf[index + 3] & 0x80) target.y -= 0x8000;
-                      else target.y = -target.y;
-                      if (rec_buf[index + 5] & 0x80) target.speed -= 0x8000;
-                      else target.speed = -target.speed;
+                  // Assign target information
+                  // debug_serial.println(targetCounter + 1);
+                  targets[targetCounter].id = targetCounter + 1;
+                  targets[targetCounter].x = target.x;
+                  targets[targetCounter].y = target.y;
+                  targets[targetCounter].speed = target.speed;
+                  targets[targetCounter].resolution = target.resolution;
 
-                      // Assign target information
-                      // debug_serial.println(targetCounter + 1);
-                      targets[targetCounter].id = targetCounter + 1;
-                      targets[targetCounter].x = target.x;
-                      targets[targetCounter].y = target.y;
-                      targets[targetCounter].speed = target.speed;
-                      targets[targetCounter].resolution = target.resolution;
+                  // // Output target information
+                  // debug_serial.print("Target ");
+                  // debug_serial.print(++targetCounter); // Increase the target counter and output
+                  // debug_serial.print(": X: ");
+                  // debug_serial.print(target.x);
+                  // debug_serial.print("mm, Y: ");
+                  // debug_serial.print(target.y);
+                  // debug_serial.print("mm, speed: ");
+                  // debug_serial.print(target.speed);
+                  // debug_serial.print("cm/s, Distance resolution: ");
+                  // debug_serial.print(target.resolution);
+                  // debug_serial.print("mm; ");
 
-                      // // Output target information
-                      // debug_serial.print("Target ");
-                      // debug_serial.print(++targetCounter); // Increase the target counter and output
-                      // debug_serial.print(": X: ");
-                      // debug_serial.print(target.x);
-                      // debug_serial.print("mm, Y: ");
-                      // debug_serial.print(target.y);
-                      // debug_serial.print("mm, speed: ");
-                      // debug_serial.print(target.speed);
-                      // debug_serial.print("cm/s, Distance resolution: ");
-                      // debug_serial.print(target.resolution);
-                      // debug_serial.print("mm; ");
+                  // Add target information to string
+                  // targetInfo += "目标 " + String(targetCounter + 1) + ": X: " + target.x + "mm, Y: " + target.y + "mm, 速度: " + target.speed + "cm/s, 距离分辨率: " + target.resolution + "mm; ";
+                  targetInfo += "target " + String(targetCounter + 1) + ": X: " + target.x + "mm, Y: " + target.y + "mm, speed: " + target.speed + "cm/s, distance resolution: " + target.resolution + "mm; ";
 
-                      // Add target information to string
-                      // targetInfo += "目标 " + String(targetCounter + 1) + ": X: " + target.x + "mm, Y: " + target.y + "mm, 速度: " + target.speed + "cm/s, 距离分辨率: " + target.resolution + "mm; ";
-                      targetInfo += "target " + String(targetCounter + 1) + ": X: " + target.x + "mm, Y: " + target.y + "mm, speed: " + target.speed + "cm/s, distance resolution: " + target.resolution + "mm; ";
-
-                      index += 8; // Move to the start position of the next target data
-                  }
+                  index += 8; // Move to the start position of the next target data
               }
-
-              // Output target information
-              // debug_serial.println(targetInfo);
-
-              // Output raw data
-              // debug_serial.print("Raw data: ");
-              for (int j = i; j < i + 30; j++) {
-                  if (j < len) {
-                      // debug_serial.print(rec_buf[j], HEX);
-                      // debug_serial.print(" ");
-                  }
-              }
-              // debug_serial.println("\n"); // Wrap, prepare to output the next frame of data
-
-              i = index; // Update the index of the outer loop
           }
-          // else return 0; // If the data is incomplete, return -1
+
+          // Output target information
+          // debug_serial.println(targetInfo);
+
+          // Output raw data
+          // debug_serial.print("Raw data: ");
+          for (int j = i; j < i + 30; j++) {
+              if (j < len) {
+                  // debug_serial.print(rec_buf[j], HEX);
+                  // debug_serial.print(" ");
+              }
+          }
+          // debug_serial.println("\n"); // Wrap, prepare to output the next frame of data
+
+          i = index; // Update the index of the outer loop
       }
-      return 1;
-  // }
-  // else return 0;  // The serial port buffer is empty, and returns 0
+      // else return 0; // If the data is incomplete, return -1
+  }
+  return 1;
+    // The serial port buffer is empty, and returns 0
+    // return 0;
 }
 
 
@@ -174,7 +173,7 @@ void setup() {
   digitalWrite(ledPin, HIGH);
 
   Serial.begin(115200);    // Serial port for PC communication  ... 74880 funktioniert
-  Serial2.begin(115200); // Serial port for communicating with radar module, baud rate 256000
+  Serial2.begin(256000); // Serial port for communicating with radar module, baud rate 256000.
   delay(10);
 
   Serial.println("People counting system... Start");
@@ -238,19 +237,20 @@ void setup() {
 
 void loop() {
   // digitalWrite(ledPin, LOW);
-  Serial.println();
   // Serial.print("system time: ");
   // Serial.println(millis());
 
   if (Serial2.available() > 0) {
     byte rec_buf[256] = "";
-    int len = Serial2.readBytes(rec_buf, sizeof(rec_buf));
+    int len = Serial2.readBytes(rec_buf, sizeof(rec_buf));  // TAKES AGES ??????????
+    // int len = readSerialData(rec_buf, sizeof(rec_buf));  // ChatGPT
+    // int len =3;
 
     int radar_flag = readRadarData(rec_buf, len, nowTargets, 3);
     Serial.print("radar_flag: ");
     Serial.println(radar_flag);
 
-    if (radar_flag == 1) {
+    if (radar_flag == 1) {  // radar_flag is always 1 because function sucks ass
       digitalWrite(ledPin, HIGH);
       for (int i = 0; i < 3; i++) {  // Output radar data read
         Serial.print("Target ");
@@ -281,7 +281,7 @@ void loop() {
             }
         }
         lastTargets[i] = nowTargets[i]; // Update the target information of the previous frame
-      }    
+      }
 
       // Print statistics results
       Serial.print("Number of people from left to right: ");
@@ -289,6 +289,7 @@ void loop() {
       Serial.print("Number of people from right to left: ");
       Serial.println(countRightToLeft);
 
+      // SAVE TO EEPROM
       // Check if 3 minutes have passed
       Serial.print("Intervals: ");
       Serial.println(millis() - lastUpdateTime);
@@ -315,15 +316,14 @@ void loop() {
         Serial.println(readCountFromEEPROM(countTimeAddress));
       }
     }
-
-
-  }
-  else {
+  } else {
     digitalWrite(ledPin, LOW);
+    Serial.print("No Serial2 available from sensor");
     delay(1);
   }
 
-  if (Serial.available() > 0) { // reset
+  if (Serial.available() > 0) {
+        Serial.println("Receiving commands from serial monitor..");
         digitalWrite(ledPin, HIGH);
         // If there is data to read from the serial port, read the string until a newline character is encountered
         String command = Serial.readStringUntil('\n');
@@ -333,7 +333,7 @@ void loop() {
             clearEEPROM();
             Serial.println();
             Serial.println("EEPROM cleared");
-            Serial.println("Restart . . .");
+            Serial.println("Restart..");
             softwareReset();  // Restart Arduino
         }
         else {
@@ -343,9 +343,11 @@ void loop() {
             Serial.println("Send FAC to restore factory settings");
             digitalWrite(ledPin, LOW);
         }
+    } else {
+      digitalWrite(ledPin, LOW);
     }
 
-    else digitalWrite(ledPin, LOW);
+    Serial.println();
 
 
     // if (Serial1.available() > 0) {
@@ -412,6 +414,14 @@ void loop() {
     //         }
     //     }
     // }
-
-
 }
+
+int readSerialData(byte* buffer, int bufferSize) {
+  int bytesAvailable = Serial2.available();
+  if (bytesAvailable > 0) {
+    int bytesToRead = min(bytesAvailable, bufferSize);
+    return Serial2.readBytes(buffer, bytesToRead);
+  }
+  return 0;
+}
+
