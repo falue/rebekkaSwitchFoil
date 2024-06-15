@@ -61,6 +61,7 @@ in vscode
 - zum upload auf "upload wolke" klicken beim hovern over device name (nicht rechtsklick im filebrowser)
 - After upload, three dots on device, `hard reset device`
 
+> *Attention*: When changing the `pymakr.conf` file, its changes only take effect after its uploaded to the board. Right click on the `pymakr.conf` file > "pymakr" > "upload to device" before you upload the whole thing
 
 ### Death loop exit bzw direkt auf gerät sachen laden
 - delete main file directly on the flash memory:

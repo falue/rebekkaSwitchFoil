@@ -7,8 +7,8 @@ print("System started...")
 led_pin = Pin(13, Pin.OUT)  # D13 on SparkFun RedBoard
 
 # Function to turn the LED on and off
-def blink_led():
-    while True:
+def blink_led(num_iterations):
+    for _ in range(num_iterations):
         led_pin.value(1)  # Turn the LED on
         print('LED ON')
         time.sleep(1)     # Wait for 1 second
