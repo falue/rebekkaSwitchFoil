@@ -5,18 +5,18 @@ p3 = (2000, 0)
 p4 = (-2000, 0)
 points = [p1, p2, p3, p4]
 
-def is_point_on_edge(x, y, p1, p2):
+def is_point_on_edge(x, y, l1, l2):
     """
-    Check if a point (x, y) is on the edge defined by points p1 and p2.
+    Check if a point (x, y) is on the edge defined by points l1 and l2.
     """
-    if (min(p1[0], p2[0]) <= x <= max(p1[0], p2[0]) and
-            min(p1[1], p2[1]) <= y <= max(p1[1], p2[1])):
-        if p1[0] != p2[0]:  # Non-vertical line
-            slope = (p2[1] - p1[1]) / (p2[0] - p1[0])
-            intercept = p1[1] - slope * p1[0]
+    if (min(l1[0], l2[0]) <= x <= max(l1[0], l2[0]) and
+            min(l1[1], l2[1]) <= y <= max(l1[1], l2[1])):
+        if l1[0] != l2[0]:  # Non-vertical line
+            slope = (l2[1] - l1[1]) / (l2[0] - l1[0])
+            intercept = l1[1] - slope * l1[0]
             return y == slope * x + intercept
         else:  # Vertical line
-            return x == p1[0]
+            return x == l1[0]
     return False
 
 def is_point_in_polygon(posX, posY):
@@ -26,7 +26,6 @@ def is_point_in_polygon(posX, posY):
     Args:
     posX (float): X coordinate of the point to check.
     posY (float): Y coordinate of the point to check.
-    p1, p2, p3, p4 (tuple): Tuples representing the (X, Y) coordinates of the four polygon points.
 
     Returns:
     bool: True if the point is inside the polygon, False otherwise.
