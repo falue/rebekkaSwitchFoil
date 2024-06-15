@@ -40,67 +40,10 @@ human_sensor.end_config()
 
 utime.sleep(1) #debug pour lire les rapports de configuration
 
-def parse_hlk_ld2450_data(data):
-    """
-    Parses raw data from HLK-LD2450 sensor and returns a list of tuples with target coordinates.
-    Args:
-    data (bytes): Raw data from the HLK-LD2450 sensor.
-    
-    Returns:
-    List[Tuple[int, int]]: List of tuples with x and y coordinates of targets.
-    """
-    if len(data) < 32:
-        return []
-
-    def bytes_to_int(bytes_seq):
-        result = 0
-        for b in bytes_seq:
-            result = result * 256 + int(b)
-        return result
-
-    targets = []
-    for i in range(3):  # Assuming up to 3 targets
-        x_bytes = data[4 + i * 8:6 + i * 8]
-        y_bytes = data[6 + i * 8:8 + i * 8]
-        
-        # Convert to signed integers manually
-        x = bytes_to_int(x_bytes)
-        if x >= 2**15:
-            x -= 2**16
-        y = bytes_to_int(y_bytes)
-        if y >= 2**15:
-            y -= 2**16
-        
-        if x == 0 and y == 0:
-            continue
-        targets.append((x, y))
-    
-    return targets
-
-
-def print_targets(targets):
-    """
-    Prints the list of target coordinates in a readable format.
-    Args:
-    targets (List[Tuple[int, int]]): List of tuples with x and y coordinates of targets.
-    """
-    if not targets:
-        print("No targets detected.")
-    else:
-        #print("Detected Targets:")
-        for idx, (x, y) in enumerate(targets, start=1):
-            print(f"Target {idx}: x={x}, y={y}")
-
 print('-----------DECTECTION----------------')
 while True:
-    raw_data = human_sensor.send_command_report_data()  # returns bytes
-    # print(type(raw_data))
-    parsed_data = parse_hlk_ld2450_data(raw_data)  # returns list
-    # print(type(parsed_data))
-    #print(*parsed_data, sep = ", ")  # prints a comma sep. list
-    print_targets(parsed_data)
-
-    """ human_sensor.print_meas()
+    human_sensor.send_command_report_data()  # returns bytes
+    human_sensor.print_meas()
     measurements = human_sensor.get_meas()
     for keys,values in measurements.items():
         print("{0}: {1}".format(keys, values))
@@ -109,6 +52,6 @@ while True:
     if detected:
         print("  HUMAN DETECTED: ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
     else:
-        print("  HUMAN DETECTED:") """
+        print("  HUMAN DETECTED:")
     print("--------------------------------------------------")
     utime.sleep(.05)
