@@ -1,4 +1,0 @@
-(sym_lib_table
-  (version 0)
-  (lib (name "rebekka-eagle-import")(type "KiCad")(uri "${KIPRJMOD}/rebekka-eagle-import.kicad_sym")(options "")(descr ""))
-)
