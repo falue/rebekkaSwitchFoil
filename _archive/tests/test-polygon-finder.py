@@ -4,11 +4,12 @@ import time
 import signal
 import sys
 
-# Define playfield: If human inside, its on
-p1 = (-2000, 4000)
-p2 = (2000, 4000)
-p3 = (1500, 0)
-p4 = (-1500, 0)
+# Define playfield: If human inside, its TRUE
+# in cm
+p1 = (-50, 600)
+p2 = (50, 600)
+p3 = (50, 0)
+p4 = (-50, 0)
 points = [p1, p2, p3, p4]
 
 # Flag to control the loop
@@ -74,8 +75,8 @@ def plot_polygon_and_points(points, targets, any_dot_in_polygon):
     for posX, posY, result in targets:
         plt.plot(posX, posY, 'ro' if result else 'bo')  # Red dot if inside, blue dot if outside
         plt.text(posX, posY, f' ({posX}, {posY})', fontsize=12, verticalalignment='bottom')
-    plt.xlim(-4000, 4000)
-    plt.ylim(-2000, 6000)
+    plt.xlim(-400, 400)
+    plt.ylim(-200, 800)
     plt.axhline(0, color='grey', linestyle='--')
     plt.axvline(0, color='grey', linestyle='--')
     plt.gca().set_aspect('equal', adjustable='box')
@@ -110,15 +111,15 @@ def run_tests():
     global running
 
     # Initial targets
-    targets = [(random.randint(-4000, 4000), random.randint(-2000, 6000)) for _ in range(3)]
+    targets = [(random.randint(-400, 400), random.randint(-200, 800)) for _ in range(3)]
 
     try:
         while running:
-            # Move targets slightly by a random amount within -250 to +250 and clamp values
+            # Move targets slightly by a random amount within -25 to +25 and clamp values
             targets = [
                 (
-                    max(-4000, min(4000, x + random.randint(-250, 250))),
-                    max(-2000, min(6000, y + random.randint(-250, 250)))
+                    max(-400, min(400, x + random.randint(-25, 25))),
+                    max(-200, min(800, y + random.randint(-25, 25)))
                 )
                 for x, y in targets
             ]
