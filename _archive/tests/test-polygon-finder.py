@@ -1,8 +1,11 @@
+import matplotlib.pyplot as plt
+import random
+
 # Define playfield: If human inside, its on
 p1 = (-2000, 4000)
 p2 = (2000, 4000)
-p3 = (2000, 0)
-p4 = (-2000, 0)
+p3 = (1500, 0)
+p4 = (-1500, 0)
 points = [p1, p2, p3, p4]
 
 def is_point_on_edge(x, y, l1, l2):
@@ -55,6 +58,23 @@ def is_point_in_polygon(posX, posY):
 
     return is_inside_polygon(posX, posY, points)
 
+def plot_polygon_and_point(points, posX, posY, result):
+    """
+    Plots the polygon and the point, and shows if the point is inside or outside.
+    """
+    polygon = plt.Polygon(points, closed=True, edgecolor='k', facecolor='lightgrey')
+    plt.gca().add_patch(polygon)
+    plt.plot(posX, posY, 'bo' if result else 'ro')  # Red dot if inside, blue dot if outside
+    plt.text(posX, posY, f' ({posX}, {posY})', fontsize=12, verticalalignment='bottom')
+    plt.xlim(-4000, 4000)
+    plt.ylim(-2000, 6000)
+    plt.axhline(0, color='grey', linestyle='--')
+    plt.axvline(0, color='grey', linestyle='--')
+    plt.gca().set_aspect('equal', adjustable='box')
+    plt.title(f'Point {"Inside" if result else "Outside"} the Polygon')
+    plt.plot(0, 0, 'bo')  # sensor
+    plt.show()
+
 
 # Test cases
 def run_tests():
@@ -81,6 +101,12 @@ def run_tests():
     # Test case 6: Point outside the square
     test = is_point_in_polygon(6666, -4)
     print(f"Test 6 (outside): Expected False, got {test}")
+
+    while True:
+        X = random.randint(-4000, 4000)
+        Y = random.randint(-2000, 6000)
+        result = is_point_in_polygon(X, Y)
+        plot_polygon_and_point(points, X, Y, result)
 
 if __name__ == "__main__":
     run_tests()
