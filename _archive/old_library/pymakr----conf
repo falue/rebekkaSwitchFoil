@@ -1,0 +1,12 @@
+{
+    "py_ignore": [
+      ".vscode",
+      ".gitignore",
+      ".git",
+      ".DS_Store",
+      ".history",
+      "env",
+      "venv"
+    ],
+    "name": "Old library working"
+}
