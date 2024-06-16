@@ -32,7 +32,7 @@ Get <https://github.com/espressif/esptool>
 First, erase flash memory from dir `esptool-maser`
 
 ```
-cd _archive/esptool-master
+cd _archive/esptool
 esptool.py --port /dev/cu.usbserial-0275EB94 erase_flash
 ```
 if:
