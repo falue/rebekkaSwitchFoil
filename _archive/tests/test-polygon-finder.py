@@ -114,7 +114,7 @@ def run_tests():
 
     try:
         while running:
-            # Move targets slightly by a random amount within -50 to +50 and clamp values
+            # Move targets slightly by a random amount within -250 to +250 and clamp values
             targets = [
                 (
                     max(-4000, min(4000, x + random.randint(-250, 250))),
@@ -127,7 +127,7 @@ def run_tests():
             any_dot_in_polygon = any(result for _, _, result in results)
             print(f"Any dot in polygon: {'Yes' if any_dot_in_polygon else 'No'}")
             plot_polygon_and_points(points, results, any_dot_in_polygon)
-            time.sleep(1)  # Wait for 1 second before the next update
+            time.sleep(.1)  # Wait for 1 second before the next update
     except KeyboardInterrupt:
         print('Interrupted by user')
         running = False
