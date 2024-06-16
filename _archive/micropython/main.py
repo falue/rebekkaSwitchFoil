@@ -43,15 +43,15 @@ utime.sleep(1) #debug pour lire les rapports de configuration
 print('-----------DECTECTION----------------')
 while True:
     human_sensor.send_command_report_data()  # returns bytes
-    human_sensor.print_meas()
+    """ human_sensor.print_meas()
     measurements = human_sensor.get_meas()
     for keys,values in measurements.items():
         print("{0}: {1}".format(keys, values))
 
-    detected = human_sensor.human_detection(boardled,0,0)
-    if detected:
-        print("  HUMAN DETECTED: ||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
+    detected = human_sensor.human_detection(boardled,50,50) """
+    """ if detected:
+        print("  HUMAN DETECTED: |||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||")
     else:
-        print("  HUMAN DETECTED:")
-    print("--------------------------------------------------")
+        print("  HUMAN DETECTED:") """
+    #print("--------------------------------------------------")
     utime.sleep(.05)

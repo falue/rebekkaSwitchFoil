@@ -73,10 +73,11 @@ class LD2450() :
     #affichage des frames - Utiliser pour debugger
     def print_frame_bytes(self,data):  
         try :                      
-            text = f"hex: "
+            #text = f"hex: "
+            text = ""
             for i in range(0, len(data)):
-                text = text + f" {data[i]:02x}"
-            print(text)
+                text = text + f"{data[i]:02x} "
+            print(text+"\n")
         except :
             pass
     #flush : vidange du buffer (lecture des datas)
@@ -258,10 +259,10 @@ class LD2450() :
         if self.ser.any() > 0: 
             #Lire le message reçu
             report_data = self.ser.read()
-            #self.print_frame_bytes(report_data) # debug
+            self.print_frame_bytes(report_data) # debug
             self.parse_report(report_data) #analyse mesure
             return report_data
-        else :
+        """ else :
             print("probleme communication : reponse vide ")
             report_data = NULLDATA
             # sanity checks passed. Store the sensor data in meas
@@ -272,7 +273,7 @@ class LD2450() :
             self.meas["stationary_energy"] = 0
             self.meas["detection_distance"] = 0
             self.communication_error = 1 
-            return report_data
+            return report_data """
         
 
     def print_measORIGINAL(self):
@@ -295,7 +296,7 @@ class LD2450() :
         return self.meas
         
 
-    def human_detectionORIGINAL(self,led,seuil_stat,seuil_mov):
+    def human_detectionORIGINAL(self,led,threshold_static,threshold_movement):
         if self.communication_error :
             for i in range (10):
                 led.on()
@@ -312,18 +313,18 @@ class LD2450() :
         #    led.off()
         #    return 0
 
-    def human_detection(self,led,seuil_stat,seuil_mov):  # threshold_static, threshold_movement
+    def human_detection(self,led,threshold_static,threshold_movement):  # threshold_static, threshold_movement
         if self.communication_error :
             for i in range (10) :
                 led.on()
                 utime.sleep(0.1)
                 led.off()
                 utime.sleep(0.1)
-        elif self.meas['stationary_energy']>seuil_stat or self.meas['moving_energy']>seuil_mov :
-            if self.meas['stationary_distance']<self.meas['moving_distance'] :
-                print('  Motionless human presence at ',self.meas['stationary_distance'],'cm')
+        elif self.meas['stationary_energy'] > threshold_static or self.meas['moving_energy'] > threshold_movement :
+            if self.meas['stationary_distance'] < self.meas['moving_distance'] :
+                print('  Motionless human presence at ', self.meas['stationary_distance'],'cm')
             else :
-                print('  Human presence in movement at  ',self.meas['moving_distance'],'cm')
+                print('  Human presence in movement at  ', self.meas['moving_distance'],'cm')
             led.on()
             return 1
         else :     
