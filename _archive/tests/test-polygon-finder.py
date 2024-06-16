@@ -11,6 +11,9 @@ p3 = (1500, 0)
 p4 = (-1500, 0)
 points = [p1, p2, p3, p4]
 
+# Flag to control the loop
+running = True
+
 def is_point_on_edge(x, y, l1, l2):
     """
     Check if a point (x, y) is on the edge defined by points l1 and l2.
@@ -76,15 +79,24 @@ def plot_polygon_and_points(points, targets, any_dot_in_polygon):
     plt.axhline(0, color='grey', linestyle='--')
     plt.axvline(0, color='grey', linestyle='--')
     plt.gca().set_aspect('equal', adjustable='box')
-    plt.title(f'{"At least one point is inside" if any_dot_in_polygon else "All Outside"} the Polygon')
+    plt.title(f'{"At least one person is inside" if any_dot_in_polygon else "All persons outside"} the polygon')
     plt.plot(0, 0, 'ko')  # sensor
     plt.draw()
     plt.pause(0.1)  # Pause to update the plot
 
+def handle_close(event):
+    global running
+    print('Window closed')
+    running = False
+    plt.ioff()
+    plt.close('all')
+
 def signal_handler(sig, frame):
+    global running
     print('Exiting...')
+    running = False
     plt.ioff()  # Turn off interactive mode
-    plt.close('all')  # Close all plots
+    plt.close('all')
     sys.exit(0)
 
 # Register the signal handler for SIGINT (Ctrl+C)
@@ -92,12 +104,25 @@ signal.signal(signal.SIGINT, signal_handler)
 
 def run_tests():
     plt.ion()  # Turn on interactive mode
+    fig = plt.figure()
+    fig.canvas.mpl_connect('close_event', handle_close)  # Connect the close event to the handler
+
+    global running
+
+    # Initial targets
+    targets = [(random.randint(-4000, 4000), random.randint(-2000, 6000)) for _ in range(3)]
 
     try:
-        # Random targets
-        while True:
-            # Invent 3 targets at random
-            targets = [(random.randint(-4000, 4000), random.randint(-2000, 6000)) for _ in range(3)]
+        while running:
+            # Move targets slightly by a random amount within -50 to +50 and clamp values
+            targets = [
+                (
+                    max(-4000, min(4000, x + random.randint(-250, 250))),
+                    max(-2000, min(6000, y + random.randint(-250, 250)))
+                )
+                for x, y in targets
+            ]
+            
             results = [(x, y, is_point_in_polygon(x, y)) for x, y in targets]
             any_dot_in_polygon = any(result for _, _, result in results)
             print(f"Any dot in polygon: {'Yes' if any_dot_in_polygon else 'No'}")
@@ -105,12 +130,14 @@ def run_tests():
             time.sleep(1)  # Wait for 1 second before the next update
     except KeyboardInterrupt:
         print('Interrupted by user')
+        running = False
         plt.ioff()  # Turn off interactive mode
-        plt.close('all')  # Close all plots
+        plt.close('all')
     except Exception as e:
         print(f"Exiting due to an error: {e}")
+        running = False
         plt.ioff()  # Turn off interactive mode
-        plt.close('all')  # Close all plots
+        plt.close('all')
 
 if __name__ == "__main__":
     run_tests()
