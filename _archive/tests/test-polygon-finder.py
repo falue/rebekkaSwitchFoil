@@ -1,5 +1,8 @@
 import matplotlib.pyplot as plt
 import random
+import time
+import signal
+import sys
 
 # Define playfield: If human inside, its on
 p1 = (-2000, 4000)
@@ -62,6 +65,7 @@ def plot_polygon_and_points(points, targets, any_dot_in_polygon):
     """
     Plots the polygon and multiple points, and shows if any point is inside or outside.
     """
+    plt.clf()  # Clear the previous plot
     polygon = plt.Polygon(points, closed=True, edgecolor='k', facecolor='lightgrey')
     plt.gca().add_patch(polygon)
     for posX, posY, result in targets:
@@ -74,20 +78,39 @@ def plot_polygon_and_points(points, targets, any_dot_in_polygon):
     plt.gca().set_aspect('equal', adjustable='box')
     plt.title(f'{"At least one point is inside" if any_dot_in_polygon else "All Outside"} the Polygon')
     plt.plot(0, 0, 'ko')  # sensor
-    plt.show()
+    plt.draw()
+    plt.pause(0.1)  # Pause to update the plot
 
-# Test cases
+def signal_handler(sig, frame):
+    print('Exiting...')
+    plt.ioff()  # Turn off interactive mode
+    plt.close('all')  # Close all plots
+    sys.exit(0)
+
+# Register the signal handler for SIGINT (Ctrl+C)
+signal.signal(signal.SIGINT, signal_handler)
+
 def run_tests():
-    # Random targets
-    while True:
-        # Invent 3 targets at random
-        targets = [(random.randint(-4000, 4000), random.randint(-2000, 6000)) for _ in range(3)]
-        # 
-        results = [(x, y, is_point_in_polygon(x, y)) for x, y in targets]
-        any_dot_in_polygon = any(result for _, _, result in results)
-        print(f"Any dot in polygon: {"Yes" if any_dot_in_polygon else "No"}")
-        # Print them
-        plot_polygon_and_points(points, results, any_dot_in_polygon)
+    plt.ion()  # Turn on interactive mode
+
+    try:
+        # Random targets
+        while True:
+            # Invent 3 targets at random
+            targets = [(random.randint(-4000, 4000), random.randint(-2000, 6000)) for _ in range(3)]
+            results = [(x, y, is_point_in_polygon(x, y)) for x, y in targets]
+            any_dot_in_polygon = any(result for _, _, result in results)
+            print(f"Any dot in polygon: {'Yes' if any_dot_in_polygon else 'No'}")
+            plot_polygon_and_points(points, results, any_dot_in_polygon)
+            time.sleep(1)  # Wait for 1 second before the next update
+    except KeyboardInterrupt:
+        print('Interrupted by user')
+        plt.ioff()  # Turn off interactive mode
+        plt.close('all')  # Close all plots
+    except Exception as e:
+        print(f"Exiting due to an error: {e}")
+        plt.ioff()  # Turn off interactive mode
+        plt.close('all')  # Close all plots
 
 if __name__ == "__main__":
     run_tests()
