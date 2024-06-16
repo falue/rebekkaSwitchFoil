@@ -58,55 +58,36 @@ def is_point_in_polygon(posX, posY):
 
     return is_inside_polygon(posX, posY, points)
 
-def plot_polygon_and_point(points, posX, posY, result):
+def plot_polygon_and_points(points, targets, any_dot_in_polygon):
     """
-    Plots the polygon and the point, and shows if the point is inside or outside.
+    Plots the polygon and multiple points, and shows if any point is inside or outside.
     """
     polygon = plt.Polygon(points, closed=True, edgecolor='k', facecolor='lightgrey')
     plt.gca().add_patch(polygon)
-    plt.plot(posX, posY, 'bo' if result else 'ro')  # Red dot if inside, blue dot if outside
-    plt.text(posX, posY, f' ({posX}, {posY})', fontsize=12, verticalalignment='bottom')
+    for posX, posY, result in targets:
+        plt.plot(posX, posY, 'ro' if result else 'bo')  # Red dot if inside, blue dot if outside
+        plt.text(posX, posY, f' ({posX}, {posY})', fontsize=12, verticalalignment='bottom')
     plt.xlim(-4000, 4000)
     plt.ylim(-2000, 6000)
     plt.axhline(0, color='grey', linestyle='--')
     plt.axvline(0, color='grey', linestyle='--')
     plt.gca().set_aspect('equal', adjustable='box')
-    plt.title(f'Point {"Inside" if result else "Outside"} the Polygon')
-    plt.plot(0, 0, 'bo')  # sensor
+    plt.title(f'{"At least one point is inside" if any_dot_in_polygon else "All Outside"} the Polygon')
+    plt.plot(0, 0, 'ko')  # sensor
     plt.show()
-
 
 # Test cases
 def run_tests():
-    # Test case 1: Point inside the square
-    test = is_point_in_polygon(-500, 2000)
-    print(f"Test 1 (inside): Expected True, got {test}")
-
-    # Test case 2: Point on the edge of the square
-    test = is_point_in_polygon(-2000, 2000)
-    print(f"Test 2 (on edge): Expected True, got {test}")
-
-    # Test case 3: Point outside the square
-    test = is_point_in_polygon(3333, 3000)
-    print(f"Test 3 (outside): Expected False, got {test}")
-
-    # Test case 4: Point exactly at a vertex
-    test = is_point_in_polygon(-2000, 4000)
-    print(f"Test 4 (vertex): Expected True, got {test}")
-
-    # Test case 5: Point outside the square
-    test = is_point_in_polygon(-6666, 6666)
-    print(f"Test 5 (outside): Expected False, got {test}")
-
-    # Test case 6: Point outside the square
-    test = is_point_in_polygon(6666, -4)
-    print(f"Test 6 (outside): Expected False, got {test}")
-
+    # Random targets
     while True:
-        X = random.randint(-4000, 4000)
-        Y = random.randint(-2000, 6000)
-        result = is_point_in_polygon(X, Y)
-        plot_polygon_and_point(points, X, Y, result)
+        # Invent 3 targets at random
+        targets = [(random.randint(-4000, 4000), random.randint(-2000, 6000)) for _ in range(3)]
+        # 
+        results = [(x, y, is_point_in_polygon(x, y)) for x, y in targets]
+        any_dot_in_polygon = any(result for _, _, result in results)
+        print(f"Any dot in polygon: {"Yes" if any_dot_in_polygon else "No"}")
+        # Print them
+        plot_polygon_and_points(points, results, any_dot_in_polygon)
 
 if __name__ == "__main__":
     run_tests()
