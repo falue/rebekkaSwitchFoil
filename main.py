@@ -1,136 +1,137 @@
 # HLK-LD2410 B et C  (Microwave-based human/object presence sensor) 
 #rev 1 DUCROS christian janvier 2024 à partir du fichier 
 #rev 1 - shabaz - May 2023
+#rev 2 - dalius, fabian, besi - jun 2024
+# 
+# Based on
+#   https://github.com/christianDUCROS/ld2410-human_sensor
+# and
+#   https://github.com/QuirkyCort/IoTy/blob/main/public/extensions/ld2410.py
+# 
+# Check out the PDF in docs/ page 12 for different communication protocol for sensor 2450 instead of 2410 (!)
+# 
+# Repo @ https://github.com/falue/rebekkaSwitchFoil
 
-#programme principal
+
+print("Program initiated")
+
 from machine import Pin, UART
 import utime
-
-##
-## https://github.com/csRon/HLK-LD2450
-##
-# import serial_protocol
-# import serial
-
-print("started")
+import sys
 
 # Import additional local library
-# Folder 'libraries/ld2450' is sent while offloading to device (?)
-import sys
 sys.path.append( './libraries')
 from ld2450 import LD2450  # https://github.com/christianDUCROS/ld2410-human_sensor
 
+# DEFINE PLAYGROUND
+# If a person is in this area, the relay is switched on
+# Polygon edge points, clockwise from top left, in cm
+p1 = (-30, 600)
+p2 = (30, 600)
+p3 = (30, 0)
+p4 = (-30, 0)
+points = [p1, p2, p3, p4]
 
-# led if human_detection
-# board led on Sparkfun Thing Plus is 13
-boardled = Pin(13, Pin.OUT)
-boardled.on()
+# PIN DEFINITIONS
+# Sparkfun Thing Plus
+led_pin = Pin(13, Pin.OUT)   # On board led
+relay_pin = Pin(4, Pin.OUT)  # GPIO 4 is equiv. A5
+tx_pin = 27
+rx_pin = 12
 
-tx_pin = 27 # WORKS ON PIN 16 aswell
-rx_pin = 12 # WORKS ON PIN 17 aswell
-# probleme communication : reponse vide 
 
+def is_point_on_edge(x, y, l1, l2):
+    """
+    Check if a point (x, y) is on the edge defined by points l1 and l2.
+    """
+    if (min(l1[0], l2[0]) <= x <= max(l1[0], l2[0]) and
+            min(l1[1], l2[1]) <= y <= max(l1[1], l2[1])):
+        if l1[0] != l2[0]:  # Non-vertical line
+            slope = (l2[1] - l1[1]) / (l2[0] - l1[0])
+            intercept = l1[1] - slope * l1[0]
+            return y == slope * x + intercept
+        else:  # Vertical line
+            return x == l1[0]
+    return False
+
+def is_point_in_polygon(posX, posY):
+    """
+    Check if the point (posX, posY) is inside the polygon defined by points p1, p2, p3, p4.
+    Args:
+    posX (float): X coordinate of the point to check.
+    posY (float): Y coordinate of the point to check.
+    Returns:
+    bool: True if the point is inside the polygon, False otherwise.
+    """
+
+    # Check if the point is on any of the polygon's edges
+    for i in range(4):
+        if is_point_on_edge(posX, posY, points[i], points[(i + 1) % 4]):
+            return True
+
+    # Ray-casting algorithm
+    def is_inside_polygon(x, y, points):
+        n = len(points)
+        inside = False
+        px, py = points[0]
+        for i in range(1, n + 1):
+            qx, qy = points[i % n]
+            if y > min(py, qy):
+                if y <= max(py, qy):
+                    if x <= max(px, qx):
+                        if py != qy:
+                            x_intersect = (y - py) * (qx - px) / (qy - py) + px
+                        if px == qx or x <= x_intersect:
+                            inside = not inside
+            px, py = qx, qy
+        return inside
+
+    return is_inside_polygon(posX, posY, points)
+
+# SETUP
 print('-----------CONFIGURATION----------------')
 uart1 = UART(1, baudrate = 256000, tx=Pin(tx_pin), rx=Pin(rx_pin), timeout = 1, timeout_char = 0, invert = 0)
 print(uart1)
-
+led_pin.on()
 human_sensor = LD2450(uart1)
-print('----------------------------------------')
 human_sensor.enable_config()
 human_sensor.read_firmware_version()
 human_sensor.get_mac_address()
 human_sensor.end_config()
+print('----------------------------------------')
+utime.sleep(1) # debug to read configuration reports
+print('-----------DECTECTION-------------------')
 
-utime.sleep(1) #debug pour lire les rapports de configuration
-
-
-REPORT_HEADER = bytes.fromhex('AA FF 03 00')  # was AA FF 03 00
-REPORT_TAIL = bytes.fromhex('55 CC')  # was 55 CC
-def read_radar_data(serial_port_line:bytes)->tuple[12]:
-    '''
-    Read the basic mode data from the serial port line (see docs 2.3)
-    Parameters:
-    - serial_port_line (bytes): the serial port line
-    Returns:
-    - radar_data (tuple[12]): the radar data
-        - [0-3] x, y, speed, distance_resolution of target 1
-        - [4-7] x, y, speed, distance_resolution of target 2
-        - [8-11] x, y, speed, distance_resolution of target 3
-    '''
-
-    # Check if the frame header and tail are present
-    if REPORT_HEADER in serial_port_line and REPORT_TAIL in serial_port_line:
-        # Interpret the target data
-        if len(serial_port_line) == 30:
-            target1_bytes = serial_port_line[4:12]
-            target2_bytes = serial_port_line[12:20]
-            target3_bytes = serial_port_line[20:28]
-
-            all_targets_bytes = [target1_bytes, target2_bytes, target3_bytes]
-
-            all_targets_data = []
-
-            for target_bytes in all_targets_bytes:
-                x = int.from_bytes(target_bytes[0:2], byteorder='little', signed=True)
-                y = int.from_bytes(target_bytes[2:4], byteorder='little', signed=True)     
-                speed = int.from_bytes(target_bytes[4:6], byteorder='little', signed=True)
-                distance_resolution = int.from_bytes(target_bytes[6:8], byteorder='little', signed=False)
-    
-                # substract 2^15 depending if negative or positive
-                x = x if x >= 0 else -2**15 - x
-                y = y if y >= 0 else -2**15 - y
-                speed = speed if speed >= 0 else -2**15 - speed
-
-                # append ftarget data to the list and flatten
-                all_targets_data.extend([x, y, speed, distance_resolution])
-            
-            return tuple(all_targets_data)
-        
-        # if the target data is not 17 bytes long the line is corrupted
-        else:
-            print("Serial port line corrupted - not 30 bytes long")
-            return None
-    # if the header and tail are not present the line is corrupted
-    else: 
-        print("Serial port line corrupted - header or tail not present")
-        return None
-
-print('-----------DECTECTION----------------')
+# LOOP
 while True:
-    # Read a line from the serial port
-    #serial_port_line = ser.read_until(serial_protocol.REPORT_TAIL)
-    serial_port_line = human_sensor.send_command_report_data()  # returns bytes
-    print(type(serial_port_line))
-    serial_port_line = ' '.join(f'{byte:02x}' for byte in serial_port_line)
-    print(serial_port_line)
-    print(type(serial_port_line))
-    print(type(serial_port_line.encode('utf-8')))
+    # Read line from the serial port as HEX
+    human_sensor.send_command_report_data() # get sensor data
 
-    all_target_values = read_radar_data(serial_port_line.encode('utf-8'))
-    
-    if all_target_values is None:
-        continue
+    # Translate data to object
+    targets = human_sensor.get_sensor_measurements()
+    print('DATA:',targets)
 
-    target1_x, target1_y, target1_speed, target1_distance_res, \
-    target2_x, target2_y, target2_speed, target2_distance_res, \
-    target3_x, target3_y, target3_speed, target3_distance_res \
-        = all_target_values
+    # targetCoords = [(targets[0]["x"], targets[0]["y"]), (targets[1]["x"],targets[1]["y"]), (targets[2]["x"], targets[2]["y"])]
+    targetCoords = [
+        ((targets[0]["x"], targets[0]["y"]) if targets[0] is not None else (0, -100)),
+        ((targets[1]["x"], targets[1]["y"]) if targets[1] is not None else (0, -100)),
+        ((targets[2]["x"], targets[2]["y"]) if targets[2] is not None else (0, -100))
+    ]
+    # targets = [(246, 279), (-286, 285), (292, -140)]
+    # TODO: if all points outside or noone around, how to detect?
 
-    # Print the interpreted information for all targets
-    print(f'Target 1 x-coordinate: {target1_x} mm')
-    print(f'Target 1 y-coordinate: {target1_y} mm')
-    print(f'Target 1 speed: {target1_speed} cm/s')
-    print(f'Target 1 distance res: {target1_distance_res} mm')
+    # detect persons
+    results = [(x, y, is_point_in_polygon(x, y)) for x, y in targetCoords]
+    any_human_in_area = any(result for _, _, result in results)
 
-    print(f'Target 2 x-coordinate: {target2_x} mm')
-    print(f'Target 2 y-coordinate: {target2_y} mm')
-    print(f'Target 2 speed: {target2_speed} cm/s')
-    print(f'Target 2 distance res: {target2_distance_res} mm')
+    # Is someone in area?
+    if any_human_in_area:
+        print("There you are! Human detected.")
+        relay_pin.value(0)  # Turn the relay off (therefore, make smart foil white, therefore needs no power)
+        led_pin.value(1)    # Turn the LED on
+    else:
+        print("Target lost!")
+        relay_pin.value(1)  # Turn the relay on (therefore, make smart foil transparent, therefore needs power)
+        led_pin.value(0)    # Turn the LED off
 
-    print(f'Target 3 x-coordinate: {target3_x} mm')
-    print(f'Target 3 y-coordinate: {target3_y} mm')
-    print(f'Target 3 speed: {target3_speed} cm/s')
-    print(f'Target 3 distance res: {target3_distance_res} mm')
-
-    print("--------------------------------------------------")
-    utime.sleep(.05)
+    utime.sleep(.03) #speed

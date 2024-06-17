@@ -1,7 +1,6 @@
 # HLK-LD2450 B et C  (Microwave-based human/object presence sensor) 
 #rev 1 DUCROS christian janvier 2024 à partir du fichier 
 #rev 1 - shabaz - May 2023
-#rev 3 - fabian - Jun 2024
 import  utime
 
 #------------ 2.1 Command protocol frame format---------------
@@ -16,59 +15,61 @@ REPORT_TERMINATOR = bytes([0x55, 0xcc])
 NULLDATA = bytes([0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]) #no response --> ack = 0 donc failure
 
 STATE_NO_TARGET = 0
-STATE_MOVING_TARGET = 1
-STATE_STATIONARY_TARGET = 2
-STATE_COMBINED_TARGET = 3
-TARGET_NAME = ["no_target", "moving_target", "stationary_target", "combined_target"]
+# STATE_MOVING_TARGET = 1
+# STATE_STATIONARY_TARGET = 2
+# STATE_COMBINED_TARGET = 3
+# TARGET_NAME = ["no_target", "moving_target", "stationary_target", "combined_target"]
 
-THRESHOLD_CM = 7000
+THRESHOLD_CM = 70
 
 class LD2450() :
     
     def __init__(self,bus_uart): 
         self.ser = bus_uart
         print(f"Threshold is {THRESHOLD_CM} cm")
-        self.meas = {
-                "state": STATE_NO_TARGET,
-                "moving_distance": 0,
-                "moving_energy": 0,
-                "stationary_distance": 0,
-                "stationary_energy": 0,
-                "detection_distance": 0 }
+        self.meas = [None, None, None]
         
         self.communication_error = 0 
 
-    def parse_report(self,data):
+    def parse_report(self, data):
         # sanity checks
-        #self.print_frame_bytes(data)  #####
-        if len(data) != 30:
+        # self.print_frame_bytes(data)
+        # if len(data) != 30:
             # print(f"error, frame length ,ist be 30 but is {len(data)}")
-            return 0
+            # return 0
         if data[0:4] != REPORT_HEADER:
             # print(f"error, frame header is incorrect")
             return 0
-        # sanity checks passed. Store the sensor data in meas
-        x = 0 - data[4] + (data[5] << 8)
-        d = (data[6] + (data[7] << 8)) -  2**15
-        from machine import Pin
-        boardled = Pin(13, Pin.OUT)
-    
-        if d/10 < 70:
-            boardled.on()
-        else:
-            boardled.off()
-        #print(f"X = {x/10} cm")
-        #print(f"Distance = {d/10} cm")
-        #print(f"Speed = {data[8] + (data[9] << 8)} cm/s")
         
-        self.meas["moving_distance"] = data[8] + (data[9] << 8)
-        self.meas["moving_energy"] = data[11]
-        self.meas["stationary_distance"] = data[12] + (data[13] << 8)
-        self.meas["stationary_energy"] = data[14]
-        self.meas["detection_distance"] = data[15] + (data[16] << 8)
-        return data
-        return 1  ######
-          
+        # Process each chunk of data
+        for i in range(3):  # There are 3 chunks in total
+            start_index = 4 + i * 8
+            end_index = start_index + 8
+            chunk = data[start_index:end_index]
+            # print('start_index',start_index)
+            # print('end_index',end_index)
+            # print(f'chunk {i}:', chunk)
+            
+            if all(b == 0 for b in chunk):
+                # Skip chunks that are all zeros and set to None
+                self.meas[i] = None
+                continue
+            
+            x = 0 - (chunk[0] + (chunk[1] << 8))  # mm
+            y = (chunk[2] + (chunk[3] << 8)) - 2**15  # mm
+            speed = 0 - (chunk[4] + (chunk[5] << 8))  # cm/s
+            dist_res = chunk[6] + (chunk[7] << 8)  # mm
+
+            meas_data = {
+                "x": abs(x - -32768) / 10 if x < -32768 else x / 10,
+                "y": y / 10,
+                "speed": speed,
+                "dist_res": dist_res / 10
+            }
+            
+            self.meas[i] = meas_data
+        return 1
+
 
     #---------fonctions communes configuration ----------
     #affichage des frames - Utiliser pour debugger
@@ -141,8 +142,6 @@ class LD2450() :
             print('end config failure')
             return 0
         
-     
-        
     #2.2.4 # A finir parser
     def read_parameter(self):
         cmd = 0x0061
@@ -159,7 +158,6 @@ class LD2450() :
         else :
             print('read parameter failure')
             return 0   
-
           
     #2.2.8
     def read_firmware_version(self):
@@ -238,14 +236,13 @@ class LD2450() :
         else :
             print('get_mac_address failure')
             return 0
-
             
     #2.3 RADAR data output
     #2.3.1  envoi d'une commande pour recevoir un rapport             
     def send_command_report_data(self) :
         cmd = 0x0000
         value = None
-        # Extract individual bytes from each value -->to do little endian
+        #Extraire les octets individuels de chaque valeur -->pour faire little endian 
         octet1_cmd = (cmd & 0xFF00) >> 8
         octet2_cmd = cmd & 0x00FF
         cmd_value = bytes([octet2_cmd, octet1_cmd])
@@ -260,75 +257,43 @@ class LD2450() :
             #Lire le message reçu
             report_data = self.ser.read()
             #self.print_frame_bytes(report_data) # debug
-            return self.parse_report(report_data) #analyse mesure
+            self.parse_report(report_data) #analyse mesure
             return report_data
         else :
             print("probleme communication : reponse vide ")
             report_data = NULLDATA
             # sanity checks passed. Store the sensor data in meas
-            self.meas["state"] = 0
-            self.meas["moving_distance"] = 0
-            self.meas["moving_energy"] = 0
-            self.meas["stationary_distance"] = 0
-            self.meas["stationary_energy"] = 0
-            self.meas["detection_distance"] = 0
-            self.communication_error = 1 
+            # self.meas["state"] = 0
+            # self.meas["x"] = 0
+            # self.meas["y"] = 0
+            # self.meas["speed"] = 0
+            # self.meas["dist_res"] = 0
+            self.communication_error = 1
             return report_data
         
 
-    def print_measORIGINAL(self):
-        print(f"moving distance: {self.meas['moving_distance']}")
-        print(f"moving energy: {self.meas['moving_energy']}")
-        print(f"stationary distance: {self.meas['stationary_distance']}")
-        print(f"stationary energy: {self.meas['stationary_energy']}")
-        print(f"detection distance: {self.meas['detection_distance']}")
+    # def print_meas(self):
+        # print(f"X axis: {self.meas['x']}")
+        # print(f"Y axis: {self.meas['y']}")
+        # print(f"Speed axis: {self.meas['speed']}")
+        # print(f"Distance resolution: {self.meas['speed']}")
 
-    
-    def print_meas(self):
-        print(f"state: {TARGET_NAME[self.meas['state']]}")
-        print(f"moving distance: {self.meas['moving_distance']}")
-        print(f"moving energy: {self.meas['moving_energy']}")
-        print(f"stationary distance: {self.meas['stationary_distance']}")
-        print(f"stationary energy: {self.meas['stationary_energy']}")
-        print(f"detection distance: {self.meas['detection_distance']}")
-    
-    def get_meas(self):
+    def get_sensor_measurements(self):
         return self.meas
-        
 
-    def human_detectionORIGINAL(self,led,seuil_stat,seuil_mov):
-        if self.communication_error :
-            for i in range (10):
-                led.on()
-                utime.sleep(0.1)
-                led.off()
-                utime.sleep(0.1)
-        else: 
-            print('motionless human presence at ',self.meas['stationary_distance'],'cm')
-            print('human presence in movement at ',self.meas['moving_distance'],'cm')
-            led.on()
-            return 1
+    # def human_detection(self,led,seuil_stat,seuil_mov):
+    #     if self.communication_error :
+    #         for i in range (10):
+    #             led.on()
+    #             utime.sleep(0.1)
+    #             led.off()
+    #             utime.sleep(0.1)
+    #     else: 
+    #         print('presence humaine immobile  à ',self.meas['stationary_distance'],'cm')
+    #         print('presence humaine en mouvement à ',self.meas['moving_distance'],'cm')
+    #         led.on()
+    #         return 1
         #else:     
         #    print('pas de présence humaine')
         #    led.off()
         #    return 0
-
-    def human_detection(self,led,seuil_stat,seuil_mov):  # threshold_static, threshold_movement
-        if self.communication_error :
-            for i in range (10) :
-                led.on()
-                utime.sleep(0.1)
-                led.off()
-                utime.sleep(0.1)
-        elif self.meas['stationary_energy']>seuil_stat or self.meas['moving_energy']>seuil_mov :
-            if self.meas['stationary_distance']<self.meas['moving_distance'] :
-                print('  Motionless human presence at ',self.meas['stationary_distance'],'cm')
-            else :
-                print('  Human presence in movement at  ',self.meas['moving_distance'],'cm')
-            led.on()
-            return 1
-        else :     
-            print('  no human presence')
-            led.off()
-            return 0
-        
