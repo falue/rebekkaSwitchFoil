@@ -1,0 +1,9 @@
+(fp_lib_table
+  (version 7)
+  (lib (name "SparkFun-Board")(type "KiCad")(uri "${KIPRJMOD}/lib/SparkFun-KiCad-Libraries/Footprints/SparkFun-Board.pretty")(options "")(descr ""))
+  (lib (name "TMF8820")(type "KiCad")(uri "${KIPRJMOD}/lib/TMF8820.pretty")(options "")(descr ""))
+  (lib (name "pts636")(type "KiCad")(uri "${KIPRJMOD}/lib/pts636/pts636.pretty")(options "")(descr ""))
+  (lib (name "c8-inlet")(type "KiCad")(uri "${KIPRJMOD}/lib/c8-inlet/c8-inlet.pretty")(options "")(descr ""))
+  (lib (name "robotdyn_dimmer")(type "KiCad")(uri "${KIPRJMOD}/lib/robotdyn_dimmer/robotdyn_dimmer.pretty")(options "")(descr ""))
+  (lib (name "ld2450")(type "KiCad")(uri "${KIPRJMOD}/lib/ld2450/ld2450.pretty")(options "")(descr ""))
+)
