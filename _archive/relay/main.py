@@ -20,12 +20,12 @@ def blink():
     relay_pin.value(1)  # Turn the relay on
     led_pin.value(1)    # Turn the LED on
     print('relay ON')
-    time.sleep(4)       # Wait for 1 second
+    time.sleep(2)       # Wait for 1 second
 
     relay_pin.value(0)  # Turn the relay off
     led_pin.value(0)    # Turn the LED off
     print('relay OFF')
-    time.sleep(4)       # Wait for 1 second
+    time.sleep(2)       # Wait for 1 second
 
 
 # Call the function
