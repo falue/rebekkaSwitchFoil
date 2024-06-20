@@ -6,10 +6,10 @@ import sys
 
 # Define playfield: If human inside, its TRUE
 # in cm
-p1 = (-50, 600)
-p2 = (50, 600)
-p3 = (50, 0)
-p4 = (-50, 0)
+p1 = (-65, 1200)
+p2 = (135, 1200)
+p3 = (70, 0)
+p4 = (0, 0)
 points = [p1, p2, p3, p4]
 
 # Flag to control the loop

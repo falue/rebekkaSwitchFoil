@@ -26,10 +26,10 @@ from ld2450 import LD2450  # https://github.com/christianDUCROS/ld2410-human_sen
 # DEFINE PLAYGROUND
 # If a person is in this area, the relay is switched on
 # Polygon edge points, clockwise from top left, in cm
-p1 = (-30, 600)
-p2 = (30, 600)
-p3 = (30, 0)
-p4 = (-30, 0)
+p1 = (-65, 1200)
+p2 = (135, 1200)
+p3 = (70, 0)
+p4 = (0, 0)
 points = [p1, p2, p3, p4]
 
 # PIN DEFINITIONS
