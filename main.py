@@ -26,10 +26,10 @@ from ld2450 import LD2450  # https://github.com/christianDUCROS/ld2410-human_sen
 # DEFINE PLAYGROUND
 # If a person is in this area, the relay is switched on
 # Polygon edge points, clockwise from top left, in cm
-p1 = (-65, 1200)
-p2 = (135, 1200)
-p3 = (70, 0)
-p4 = (0, 0)
+p1 = (-35, 1200)
+p2 = (35, 1200)
+p3 = (35, 0)
+p4 = (-35, 0)
 points = [p1, p2, p3, p4]
 
 # PIN DEFINITIONS
@@ -99,7 +99,7 @@ human_sensor.read_firmware_version()
 human_sensor.get_mac_address()
 human_sensor.end_config()
 print('----------------------------------------')
-utime.sleep(1) # debug to read configuration reports
+# utime.sleep(1) # debug to read configuration reports
 print('-----------DECTECTION-------------------')
 
 # LOOP
