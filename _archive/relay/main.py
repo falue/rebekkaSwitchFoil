@@ -5,7 +5,8 @@ print("System started... B")
 
 # Define the pin connected to the relay
 led_pin = Pin(13, Pin.OUT)    # D13 on SparkFun RedBoard
-relay_pin = Pin(4, Pin.OUT)  # D19 on SparkFun RedBoard 4=A5
+relay_pin = Pin(4, Pin.OUT)  # D19 on SparkFun RedBoard 4=A5   MANUAL WIRING !!!!
+relay_pin = Pin(18, Pin.OUT)  # D19 on SparkFun RedBoard 4=A5  PCB !!!!
 
 # Function to turn the relay on and off
 def switch_relay(num_iterations):
