@@ -6,12 +6,14 @@ When at least one human being is in a pre defined target area in front of the se
 
 Change the area in which the relay triggers in the `main.py` file:
 ```
-p1 = (-50, 600)
-p2 = (50, 600)
-p3 = (50, 0)
-p4 = (-50, 0)
+p1 = (-66, 777)
+p2 = (66, 777)
+p3 = (35, 0)
+p4 = (-35, 0)
 ```
 Points clockwise, all values in cm.
+Visualized and tested with script `_archive/tests/test-polygon-finder.py`.
+![test-polygon-finder.py](docs/polygon-finder.png)
 
 Based on
 - <https://github.com/christianDUCROS/ld2410-human_sensor>
