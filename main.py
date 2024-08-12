@@ -127,11 +127,11 @@ while True:
     # Is someone in area?
     if any_human_in_area:
         print("There you are! Human detected.")
-        relay_pin.value(0)  # Turn the relay off (therefore, make smart foil white, therefore needs no power)
+        relay_pin.value(1)  # Turn the relay on (therefore, make smart foil opaque, therefore needs no power)
         led_pin.value(1)    # Turn the LED on
     else:
         print("Target lost!")
-        relay_pin.value(1)  # Turn the relay on (therefore, make smart foil transparent, therefore needs power)
+        relay_pin.value(0)  # Turn the relay off (therefore, make smart foil transparent, therefore needs power)
         led_pin.value(0)    # Turn the LED off
 
     utime.sleep(.03) #speed
